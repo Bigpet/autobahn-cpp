@@ -34,7 +34,7 @@
 #include <boost/asio.hpp>
 #include <iostream>
 #include <memory>
-#include <tuple>
+
 
 void on_topic1(const autobahn::wamp_event& event)
 {

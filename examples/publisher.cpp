@@ -37,7 +37,6 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <tuple>
 
 int main(int argc, char** argv)
 {
@@ -100,7 +99,7 @@ int main(int argc, char** argv)
                         return;
                     }
 
-                    std::tuple<std::string> arguments(std::string("hello"));
+					std::vector<std::string> arguments = { { std::string("hello") } };
                     session->publish("com.examples.subscriptions.topic1", arguments);
                     std::cerr << "event published" << std::endl;
 

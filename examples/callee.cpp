@@ -39,6 +39,7 @@
 #include <string>
 #include <thread>
 #include <tuple>
+#include <array>
 
 void add2(autobahn::wamp_invocation invocation)
 {
@@ -47,7 +48,7 @@ void add2(autobahn::wamp_invocation invocation)
 
     std::cerr << "Procedure com.examples.calculator.add2 invoked: " << a << ", " << b << std::endl;
 
-    invocation->result(std::make_tuple(a + b));
+	invocation->result(std::vector<uint64_t>(1,a+b));
 }
 
 void longop(autobahn::wamp_invocation invocation)
@@ -60,10 +61,10 @@ void longop(autobahn::wamp_invocation invocation)
         boost::this_thread::sleep(boost::posix_time::milliseconds(3000));
         if (i < a)
         {
-            invocation->progress(std::make_tuple(i));
+			invocation->progress(std::vector<uint64_t>(1, i));
         }
     }
-    invocation->result(std::make_tuple(i));
+	invocation->result(std::vector<uint64_t>(1, i));
 }
 
 int main(int argc, char** argv)

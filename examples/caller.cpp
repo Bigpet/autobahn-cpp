@@ -100,7 +100,7 @@ int main(int argc, char** argv)
                     autobahn::wamp_call_options call_options;
                     call_options.set_timeout(std::chrono::seconds(10));
 
-                    std::tuple<uint64_t, uint64_t> arguments(23, 777);
+                    std::pair<uint64_t, uint64_t> arguments(23, 777);
                     call_future = session->call("com.examples.calculator.add2", arguments, call_options).then(
                     [&](boost::future<autobahn::wamp_call_result> result) {
                         try {

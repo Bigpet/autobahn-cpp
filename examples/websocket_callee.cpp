@@ -47,7 +47,7 @@ void add2(autobahn::wamp_invocation invocation)
 
     std::cerr << "Procedure com.examples.calculator.add2 invoked: " << a << ", " << b << std::endl;
 
-    invocation->result(std::make_tuple(a + b));
+    invocation->result(std::vector<uint64_t>(1,a + b));
 }
 
 typedef websocketpp::client<websocketpp::config::asio_client> client;

@@ -81,7 +81,7 @@ set(PUBLIC_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/autobahn/wamp_tcp_transport.ipp
     ${CMAKE_CURRENT_SOURCE_DIR}/autobahn/wamp_transport_handler.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/autobahn/wamp_transport.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/autobahn/wamp_uds_transport.hpp
+#    ${CMAKE_CURRENT_SOURCE_DIR}/autobahn/wamp_uds_transport.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/autobahn/wamp_unregister_request.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/autobahn/wamp_unregister_request.ipp
     ${CMAKE_CURRENT_SOURCE_DIR}/autobahn/wamp_unsubscribe_request.hpp

@@ -42,7 +42,7 @@ namespace autobahn {
 using wamp_arguments = std::vector<msgpack::object>;
 using wamp_kw_arguments = std::unordered_map<std::string, msgpack::object>;
 
-static const msgpack::object EMPTY_ARGUMENTS(std::array<msgpack::object, 0>(), nullptr);
+static const msgpack::object EMPTY_ARGUMENTS(std::vector<msgpack::object>(), nullptr);
 static const msgpack::object EMPTY_KW_ARGUMENTS(wamp_kw_arguments(), nullptr);
 
 
