@@ -34,6 +34,93 @@
 
 namespace autobahn {
 
+template <typename V, typename... T>
+constexpr auto array_of(T&&... t) -> std::array<V, sizeof...(T)>
+{
+	return { { std::forward<T>(t)... } };
+}
+using ot = msgpack::type::object_type;
+constexpr const int MSGTYPELEN = 7;
+static std::map<int, std::array<int, MSGTYPELEN>> message_types{ //[HELLO, Realm|uri, Details|dict]
+	{ (int)message_type::HELLO, array_of<int>(ot::POSITIVE_INTEGER, ot::STR, ot::MAP, 0, 0, 0, 0) },
+	//[WELCOME, Session|id, Details|dict]
+	{ (int)message_type::WELCOME, array_of<int>(ot::POSITIVE_INTEGER, ot::STR, ot::MAP, 0, 0, 0, 0) },
+	//[ABORT, Details|dict, Reason|uri]
+	{ (int)message_type::ABORT, array_of<int>(ot::POSITIVE_INTEGER, ot::MAP, ot::STR, 0, 0, 0, 0) },
+	//[CHALLENGE, AuthMethod|string, Extra|dict]
+	{ (int)message_type::CHALLENGE,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::STR, ot::MAP, 0, 0, 0, 0) },
+	//[AUTHENTICATE, Signature|string, Extra|dict]
+	{ (int)message_type::AUTHENTICATE,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::STR, ot::MAP, 0, 0, 0, 0) },
+	//[GOODBYE, Details|dict, Reason|uri]
+	{ (int)message_type::GOODBYE, array_of<int>(ot::POSITIVE_INTEGER, ot::MAP, ot::STR, 0, 0, 0, 0) },
+	{ (int)message_type::HEARTBEAT, array_of<int>(ot::POSITIVE_INTEGER, 0, 0, 0, 0, 0, 0) },
+	//[ERROR, REGISTER, REGISTER.Request|id, Details|dict, Error|uri]
+	{ (int)message_type::ERROR,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::MAP,
+	        ot::STR, 0, 0) },
+	//[PUBLISH, Request|id, Options|dict, Topic|uri, Arguments|list, ArgumentsKw|dict]
+	{ (int)message_type::PUBLISH,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::STR, ot::MAP, ot::STR, ot::ARRAY, ot::MAP, 0) },
+	//[PUBLISHED, PUBLISH.Request|id, Publication|id]
+	{ (int)message_type::PUBLISHED,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, 0, 0, 0, 0) },
+	//[SUBSCRIBE, Request|id, Options|dict, Topic|uri]
+	{ (int)message_type::SUBSCRIBE,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::MAP, ot::STR, 0, 0, 0) },
+	//[SUBSCRIBED, SUBSCRIBE.Request|id, Subscription|id]
+	{ (int)message_type::SUBSCRIBED,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, 0, 0, 0, 0) },
+	//[UNSUBSCRIBE, Request|id, SUBSCRIBED.Subscription|id]
+	{ (int)message_type::UNSUBSCRIBE,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, 0, 0, 0, 0) },
+	//[UNSUBSCRIBED, UNSUBSCRIBE.Request|id]
+	{ (int)message_type::UNSUBSCRIBED,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, 0, 0, 0, 0, 0) },
+	//[EVENT, SUBSCRIBED.Subscription|id, PUBLISHED.Publication|id,Details|dict,
+	// PUBLISH.Arguments|list,PUBLISH.ArgumentsKw|dict]
+	{ (int)message_type::EVENT,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::MAP,
+	        ot::ARRAY, ot::MAP, 0) },
+	//[CALL, Request|id, Options|dict, Procedure|uri, Arguments|list,ArgumentsKw|dict]
+	{ (int)message_type::CALL,
+	    array_of<int>(
+	        ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::MAP, ot::STR, ot::ARRAY, ot::MAP, 0) },
+	//[CANCEL, CALL.Request|id, Options|dict]
+	{ (int)message_type::CANCEL,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::MAP, 0, 0, 0, 0) },
+	//[RESULT, CALL.Request|id, Details|dict, YIELD.Arguments|list,YIELD.ArgumentsKw|dict]
+	{ (int)message_type::RESULT,
+	    array_of<int>(
+	        ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::MAP, ot::ARRAY, ot::MAP, 0, 0) },
+	//[REGISTER, Request|id, Options|dict, Procedure|uri]
+	{ (int)message_type::REGISTER,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::MAP, ot::STR, 0, 0, 0) },
+	//[REGISTERED, REGISTER.Request|id, Registration|id]
+	{ (int)message_type::REGISTERED,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, 0, 0, 0, 0) },
+	//[UNREGISTER, Request|id, REGISTERED.Registration|id]
+	{ (int)message_type::UNREGISTER,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, 0, 0, 0, 0) },
+	//[UNREGISTERED, UNREGISTER.Request|id]
+	{ (int)message_type::UNREGISTERED,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, 0, 0, 0, 0, 0) },
+	//[INVOCATION, Request|id, REGISTERED.Registration|id,Details|dict, CALL.Arguments|list,
+	// CALL.ArgumentsKw|dict]
+	{ (int)message_type::INVOCATION,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::MAP,
+	        ot::ARRAY, ot::MAP, 0) },
+	//[INTERRUPT, INVOCATION.Request|id, Options|dict]
+	{ (int)message_type::INTERRUPT,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::MAP, 0, 0, 0, 0) },
+	//[YIELD, INVOCATION.Request|id, Options|dict, Arguments|list,ArgumentsKw|dict]
+	{ (int)message_type::YIELD,
+	    array_of<int>(ot::POSITIVE_INTEGER, ot::POSITIVE_INTEGER, ot::MAP, ot::ARRAY, ot::MAP, 0, 0) }
+};
+
+constexpr const bool CHECK_TYPES = true;
+
 inline wamp_message::wamp_message(std::size_t num_fields)
     : m_zone()
     , m_fields(num_fields)
@@ -54,99 +141,98 @@ inline wamp_message::wamp_message(message_fields&& fields, msgpack::zone&& zone)
 
 inline wamp_message::wamp_message(wamp_message&& other)
 {
-    m_zone = std::move(other.m_zone);
-    m_fields = std::move(other.m_fields);
+	m_zone = std::move(other.m_zone);
+	m_fields = std::move(other.m_fields);
 }
 
 inline wamp_message& wamp_message::operator=(wamp_message&& other)
 {
-    if (this == &other) {
-        return *this;
-    }
+	if (this == &other) {
+		return *this;
+	}
 
-    m_zone = std::move(other.m_zone);
-    m_fields = std::move(other.m_fields);
+	m_zone = std::move(other.m_zone);
+	m_fields = std::move(other.m_fields);
 
-    return *this;
+	return *this;
 }
 
 inline const msgpack::object& wamp_message::field(std::size_t index) const
 {
-    if (index >= m_fields.size()) {
-        throw std::out_of_range("invalid message field index");
-    }
+	if (index >= m_fields.size()) {
+		throw std::out_of_range("invalid message field index");
+	}
 
-    return m_fields[index];
+	return m_fields[index];
 }
 
-template <typename Type>
-inline Type wamp_message::field(std::size_t index)
+template <typename Type> inline Type wamp_message::field(std::size_t index)
 {
-    if (index >= m_fields.size()) {
-        throw std::out_of_range("invalid message field index");
-    }
+	if (index >= m_fields.size()) {
+		throw std::out_of_range("invalid message field index");
+	}
 
-    return m_fields[index].as<Type>();
+	return m_fields[index].as<Type>();
 }
 
-template <typename Type>
-inline void wamp_message::set_field(std::size_t index, const Type& type)
+template <typename Type> inline void wamp_message::set_field(std::size_t index, const Type& type)
 {
-    if (index >= m_fields.size()) {
-        throw std::out_of_range("invalid message field index");
-    }
+	if (index >= m_fields.size()) {
+		throw std::out_of_range("invalid message field index");
+	}
 
-    m_fields[index] = msgpack::object(type, m_zone);
+	msgpack::object obj(type, m_zone);
+	if (CHECK_TYPES) {
+		if (index == 0) {
+			if (obj.type != ot::POSITIVE_INTEGER)
+					throw std::runtime_error("invalid type for this message");
+		} else if (index < MSGTYPELEN) {
+			if (obj.type != message_types[m_fields[0].via.i64][index])
+				throw std::runtime_error("invalid type for this message");
+		}
+	}
+	m_fields[index] = std::move(obj);
 }
 
 inline bool wamp_message::is_field_type(std::size_t index, msgpack::type::object_type type) const
 {
-    if (index >= m_fields.size()) {
-        throw std::out_of_range("invalid message field index");
-    }
+	if (index >= m_fields.size()) {
+		throw std::out_of_range("invalid message field index");
+	}
 
-    return m_fields[index].type == type;
+	return m_fields[index].type == type;
 }
 
-inline std::size_t wamp_message::size() const
-{
-    return m_fields.size();
-}
+inline std::size_t wamp_message::size() const { return m_fields.size(); }
 
-inline wamp_message::message_fields&& wamp_message::fields()
-{
-    return std::move(m_fields);
-}
+inline wamp_message::message_fields&& wamp_message::fields() { return std::move(m_fields); }
 
-inline msgpack::zone&& wamp_message::zone()
-{
-    return std::move(m_zone);
-}
+inline msgpack::zone&& wamp_message::zone() { return std::move(m_zone); }
 
 inline std::ostream& operator<<(std::ostream& os, const wamp_message& message)
 {
-    std::size_t num_fields = message.size();
-    if (num_fields == 0) {
-        os << "unknown []";
-        return os;
-    }
+	std::size_t num_fields = message.size();
+	if (num_fields == 0) {
+		os << "unknown []";
+		return os;
+	}
 
-    const msgpack::object& type_field = message.field(0);
-    message_type type = static_cast<message_type>(type_field.as<int>());
+	const msgpack::object& type_field = message.field(0);
+	message_type type = static_cast<message_type>(type_field.as<int>());
 
-    if (num_fields == 1) {
-        os << to_string(type) << " []";
-        return os;
-    }
+	if (num_fields == 1) {
+		os << to_string(type) << " []";
+		return os;
+	}
 
-    os << to_string(type) << " [";
-    os << message.field(1);
-    for (std::size_t index = 2; index < num_fields; ++index) {
-        os << ", " <<  message.field(index);
-    }
-    os << "]";
+	os << to_string(type) << " [";
+	os << message.field(1);
+	for (std::size_t index = 2; index < num_fields; ++index) {
+		os << ", " << message.field(index);
+	}
+	os << "]";
 
-    return os;
+	return os;
 }
 
 } // namespace autobahn
